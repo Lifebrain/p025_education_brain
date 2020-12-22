@@ -1,0 +1,49 @@
+---
+title: "Lifebrain: The effect of education on ICV - GAM analyses"
+subtitle: v.0.1.0'
+date: "`r Sys.Date()`"
+tags: [v.0.1.0']
+abstract: |
+  This document contains 1 GAM offset models on icv data.
+---
+
+```{r}
+library(mgcv) # package with gamm() function
+
+# load data
+input_table = paste(Sys.getenv("QDEC_DATA_DIR"),"sorted.qdec.table.dat",sep="/")
+aseg_table = paste(Sys.getenv("ASEG_DATA_DIR"),"aseg.long.table",sep="/")
+
+dat <- read.table(input_table,header=TRUE)
+dat_aseg <- read.table(aseg_table,header=TRUE)
+
+# Rename data columns and scale
+
+dat$edu = as.ordered(dat$edu_coded)
+dat$sex = as.ordered(dat$sex)
+dat$bl_age_z = scale(dat$bl_age)
+dat$int_z = scale(dat$int)
+dat$age_z = scale(dat$bl_age + dat$int)
+dat$icv_z = scale(dat_aseg$EstimatedTotalIntraCranialVol)
+
+# Get id
+dat$id = gsub("_base","",dat$fsid_base)
+
+# Only take cross data
+dat <- dat[ which(dat$int==0),]
+
+```
+\newpage
+# 1. Offset models
+## Model 1.1
+```{r}
+# GAM offset model 1
+mod_offset1 <- gam(
+  icv_z ~ 
+  s(age_z) + 
+  edu +
+  sex, 
+  data = dat
+)
+summary(mod_offset1)
+```

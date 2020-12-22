@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# GLOBAL DATA PARAMETERS
+export PROJECT_DIR="/cluster/projects/p23/users/p23-fredrmag/analysis/20200831_ukb_analysis_education"
+
+export DATA_DIR="$PROJECT_DIR/data"
+export OUTPUT_DIR="$PROJECT_DIR/output"
+
+export TABULAR_DATA_DIR="$DATA_DIR/01_tabular_data"
+export QDEC_DATA_DIR="$DATA_DIR/02_qdec_tables"
+export CONCAT_DATA_DIR="$DATA_DIR/03_concatened_surface_data"
+export ASEG_DATA_DIR="$DATA_DIR/04_aseg_tables"
+
+export COMMON_FUNCTIONS="$PROJECT_DIR/src/functions"
+
+export COMMON_DATA="$PROJECT_DIR/output/common_data"
+
+# FreeSurfer location
+export FREESURFER_HOME=/cluster/projects/p23/tools/mri/freesurfer/freesurfer.7.1.0
+source $FREESURFER_HOME/SetUpFreeSurfer.sh
+
+export FS_DATA_DIR="/cluster/projects/p23/data/open_datasets/ukb_long/bids/derivatives/freesurfer.7.1.0/recon"
