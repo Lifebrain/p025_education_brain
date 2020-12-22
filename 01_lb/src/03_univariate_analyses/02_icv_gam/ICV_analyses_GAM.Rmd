@@ -1,0 +1,71 @@
+---
+title: "Lifebrain: The effect of education on ICV - GAM analyses"
+subtitle: v.0.1.0'
+date: "`r Sys.Date()`"
+tags: [v.0.1.0']
+abstract: |
+  This document contains 2 GAM offset models on icv data.
+---
+
+```{r}
+library(mgcv) # package with gamm() function
+
+# load data
+input_table = paste(Sys.getenv("ABOVE_BELOW_MEDIAN_DIR"),"above_below_median_hippocampus_icv.txt",sep="/")
+
+dat <- read.table(input_table,header=TRUE)
+# Only take cross data
+dat <- dat[ which(dat$int==0),]
+
+# Rename data columns and scale
+dat$education_group = as.ordered(dat$above_median)
+dat$sex = as.ordered(dat$sex)
+dat$bl_age_z = scale(dat$bl_age)
+dat$edu_z = scale(dat$edu)
+dat$int_z = scale(dat$int)
+dat$age_z = scale(dat$age)
+dat$icv_z = scale(dat$icv)
+```
+\newpage
+# 1. Offset models
+## Model 1.1
+```{r}
+# GAMM offset model 1
+mod_offset1 <- gam(
+  icv_z ~ 
+  s(age_z) + 
+  edu_z +
+  sex, 
+  data = dat
+)
+summary(mod_offset1)
+mod_offset1_noedu <- gam(
+  icv_z ~ 
+  s(age_z) + 
+  sex, 
+  data = dat
+)
+anova(mod_offset1,mod_offset1_noedu)
+```
+\newpage
+## Model 1.2
+```{r}
+# GAMM offset model 2
+mod_offset2 <- gam(
+  icv_z ~ 
+  s(age_z) + 
+  edu_z +
+  scanner + 
+  sex, 
+  data = dat
+)
+summary(mod_offset2)
+mod_offset2_noedu <- gam(
+  icv_z ~ 
+  s(age_z) + 
+  scanner + 
+  sex, 
+  data = dat
+)
+anova(mod_offset2,mod_offset2_noedu)
+```

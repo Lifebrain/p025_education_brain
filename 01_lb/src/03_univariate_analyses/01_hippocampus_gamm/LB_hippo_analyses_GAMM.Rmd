@@ -1,0 +1,157 @@
+---
+title: "Lifebrain: The effect of education on hippocampus atrophy - 5 hippocampus GAMM analyses"
+subtitle: v.0.3.0
+date: "`r Sys.Date()`"
+author: Fredrik Magnussen
+tags: [v.0.3.0]
+abstract: |
+  This document contains 4 different hippocampus GAMM models:
+
+  * 2 offset models: with and without ICV
+  * 2 change(?) models: one using age and one using interval
+  * 1 model just testing int
+---
+
+```{r}
+library(mgcv) # package with gamm() function
+
+# load data
+input_table = paste(Sys.getenv("ABOVE_BELOW_MEDIAN_DIR"),"above_below_median_hippocampus_icv.txt",sep="/")
+
+dat <- read.table(input_table,header=TRUE)
+
+# Rename data columns and scale
+dat$hippocampus_volume = scale(dat$hippocampus_mean)
+dat$sex = as.ordered(dat$sex)
+dat$bl_age_z = scale(dat$bl_age)
+dat$edu_z = scale(dat$edu)
+dat$int_z = scale(dat$int)
+dat$age_z = scale(dat$age)
+dat$icv_z = scale(dat$icv)
+```
+\newpage
+# 1. Offset models
+## Model 1.1
+```{r}
+# GAMM offset model 1
+mod_offset1 <- gamm(
+  hippocampus_volume ~ 
+  s(age) + 
+  edu_z +
+  scanner + 
+  sex, 
+  data = dat, 
+  random = list(id =~ 1)
+)
+summary(mod_offset1$gam)
+```
+\newpage
+```{r}
+# Calculate F-stats
+mod_offset1_noedu <- gamm(
+  hippocampus_volume ~ 
+  s(age) + 
+  scanner + 
+  sex, 
+  data = dat, 
+  random = list(id =~ 1)
+)
+anova(mod_offset1$gam,mod_offset1_noedu$gam)
+```
+\newpage
+
+## Model 1.2
+```{r}
+# GAMM offset model 2
+mod_offset2 <- gamm(
+  hippocampus_volume ~ 
+  s(age_z) + 
+  edu_z +
+  scanner + 
+  sex +
+  icv_z, 
+  data = dat, 
+  random = list(id =~ 1)
+)
+summary(mod_offset2$gam)
+```
+\newpage
+```{r}
+# Calculate F-stats
+mod_offset2_noedu <- gamm(
+  hippocampus_volume ~ 
+  s(age_z) + 
+  scanner + 
+  sex +
+  icv_z, 
+  data = dat, 
+  random = list(id =~ 1)
+)
+anova(mod_offset2$gam,mod_offset2_noedu$gam)
+```
+\newpage
+# 2. Change models
+## 2.1 Model using age
+### Model 2.1.1
+```{r}
+# GAMM age model 1
+mod_age1 <- gamm(
+  hippocampus_volume ~ 
+  s(age_z) + 
+  s(age_z, by = edu_z) + 
+  scanner + 
+  sex + 
+  icv_z, 
+  data = dat, 
+  random = list(id =~ 1)
+)
+summary(mod_age1$gam)
+plot(mod_age1$gam, select=2, scale=0)
+```
+\newpage
+
+## 2.2 Model using interval
+### Model 2.2.1
+
+```{r}
+# interval model 1
+mod_int1 <- gamm(
+  hippocampus_volume ~ 
+  te(bl_age_z, int_z, k = c(10, 5)) + 
+  s(int_z, by = edu_z) +
+  sex + 
+  scanner +
+  icv_z, 
+  data = dat, 
+  random = list(id =~ 1)
+)
+summary(mod_int1$gam)
+```
+\newpage
+## 2.3 Model tesing interval
+### Model 2.3.1
+
+```{r}
+# interval model 1
+mod_int_only <- gamm(
+  hippocampus_volume ~ 
+  int +
+  sex + 
+  scanner,
+  data = dat, 
+  random = list(id =~ 1)
+)
+summary(mod_int_only$gam)
+```
+\newpage
+```{r}
+# Calculate F-stats
+mod_int_only_noint <- gamm(
+  hippocampus_volume ~ 
+  sex + 
+  scanner,
+  data = dat, 
+  random = list(id =~ 1)
+)
+anova(mod_int_only$gam,mod_int_only_noint$gam)
+```

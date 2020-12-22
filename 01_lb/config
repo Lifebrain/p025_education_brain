@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# GLOBAL DATA PARAMETERS
+export PROJECT_DIR="/cluster/projects/p274/projects/p025-education_brain"
+
+export DATA_DIR="$PROJECT_DIR/data"
+export OUTPUT_DIR="$PROJECT_DIR/output"
+
+export RAW_TABULAR_DATA_DIR="$DATA_DIR/01_tabular_data"
+export EDITED_TABULAR_DATA_DIR="$DATA_DIR/02_tabular_data_edited"
+export QDEC_DATA_DIR="$DATA_DIR/03_qdec_tables"
+export CONCAT_DATA_DIR="$DATA_DIR/04_concatened_surface_data"
+export ASEG_DATA_DIR="$DATA_DIR/05_aseg_tables"
+export ABOVE_BELOW_MEDIAN_DIR="$DATA_DIR/06_above_below_median_data"
+
+export COMMON_FUNCTIONS="$PROJECT_DIR/src/functions"
+export COMMON_DATA="$OUTPUT_DIR/common_data"
+
+# FreeSurfer location
+export FREESURFER_HOME=/cluster/projects/p274/tools/mri/freesurfer/freesurfer.7.1.0
+source $FREESURFER_HOME/SetUpFreeSurfer.sh
+export SUBJECTS_DIR=$FREESURFER_HOME/subjects
+
+export SITE_DATA_DIR="/tsd/p274/data/durable/data/site_data"
+export UIO_SUBJECT_DIR="$SITE_DATA_DIR/UiO/derivatives/freesurfer.7.1.0_recon"
+export MPIB_SUBJECT_DIR="$SITE_DATA_DIR/MPIB/derivatives/freesurfer.7.1.0_recon"
+export UMU_SUBJECT_DIR="$SITE_DATA_DIR/UmU/derivatives/freesurfer.7.1.0_recon"
+export UB_SUBJECT_DIR="$SITE_DATA_DIR/UB/derivatives/freesurfer.7.1.0_recon"
+# processed by Ethan 
+export UCAM_SUBJECT_DIR="$SITE_DATA_DIR/UCAM/derivatives/freesurfer.7.1.0_on_non_defaced_data/freesurfer.7.1.0_recon"
