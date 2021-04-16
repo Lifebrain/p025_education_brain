@@ -8,4 +8,4 @@ Scripts for the analyses done for the: "Educational attainment does not influenc
 ## Authors
 * **Fredrik Magnussen** - [fredrmag](https://github.com/fredrmag)
 * **Anders Lundquist** 
-* **Øystein Sørensen** - [oserensen](https://github.com/osorensen)
+* **Øystein Sørensen** - [osorensen](https://github.com/osorensen)
